@@ -1,0 +1,37 @@
+load_file("nrngui.hoc")
+
+objref nil, tobj
+strdef tstr
+
+xpanel("Lee, J 2007 Fast Rhythmic Bursting cells... Penn McNair Research Journal")
+  xlabel("Choose a cell")
+  xradiobutton("2FRB","restart(\"2FRB\")")
+  xradiobutton("FRB3","restart(\"FRB3\")")
+  xradiobutton("FRB_12_19","restart(\"FRB_12_19\")")
+  xradiobutton("FRB_12_21","restart(\"FRB_12_21\")")
+xpanel(5,100)
+
+pwmcnt = PWManager[0].count // the initial gui should not be dismissed
+
+proc restart() {local i
+	objref graphItem, save_window_
+	for i=0, n_graph_lists-1 {
+		graphList[i].remove_all()
+	}
+	flush_list.remove_all()
+	fast_flush_list.remove_all()
+	doNotify()
+
+	for (i= PWManager[0].count-1; i >= pwmcnt; i -= 1) {
+		PWManager[0].close(i)
+		doNotify()
+	}
+	stoprun = 0
+	cvode_active(1)
+//	dt = .025
+//	steps_per_ms = 40
+//    remove all sections
+	forall delete_section()
+	sprint(tstr, "%s.hoc", $s1)
+	load_file(1, tstr)
+}
